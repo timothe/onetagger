@@ -33,6 +33,49 @@ https://user-images.githubusercontent.com/15169286/193469224-cbf3af71-f6d7-4ecd-
 
 You can download latest binaries from [releases](https://github.com/Marekkon5/onetagger/releases)
 
+### Docker (CLI)
+
+A CLI-only image can be published to GHCR as `ghcr.io/<owner>/onetagger-cli`.
+On the main repository this resolves to `ghcr.io/marekkon5/onetagger-cli:latest`.
+When testing from a fork, replace `marekkon5` with your GitHub namespace or override `ONETAGGER_IMAGE`.
+
+Export the `config.json` shown by the GUI CLI dialog, then run the container with the same command you would use locally:
+
+```sh
+docker run --rm \
+  -e PUID="$(id -u)" \
+  -e PGID="$(id -g)" \
+  -v /path/to/config.json:/config/input/config.json:ro \
+  -v /path/to/music:/music \
+  -v /path/to/onetagger-state:/config/onetagger \
+  ghcr.io/marekkon5/onetagger-cli:latest \
+  autotagger --config /config/input/config.json --path /music
+```
+
+`/config/onetagger` is where the container stores `onetagger.log` and any cached Spotify token data.
+If you already have a OneTagger state directory you want to reuse, bind that directory there instead of an empty folder.
+
+The included `compose.yml` targets the same GHCR image:
+
+```sh
+ONETAGGER_CONFIG_FILE=/absolute/path/to/config.json \
+ONETAGGER_MUSIC_DIR=/absolute/path/to/music \
+ONETAGGER_STATE_DIR=/absolute/path/to/onetagger-state \
+docker compose run --rm onetagger \
+  autotagger --config /config/input/config.json --path /music
+```
+
+Any other `onetagger-cli` subcommand can be passed through in the same way.
+
+If you need a custom npm registry for local image builds, pass your global npm config as a BuildKit secret:
+
+```sh
+docker build \
+  --secret id=npmrc,src="$HOME/.npmrc" \
+  --build-arg GITHUB_SHA="$(git rev-parse HEAD)" \
+  -t onetagger-cli .
+```
+
 
 ## Credits
 Bas Curtiz - UI, Idea, Help  
