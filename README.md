@@ -64,12 +64,12 @@ docker compose run --rm onetagger \
   autotagger --config /data/config.json --path /music
 ```
 
-### Spotify auth on NAS or other remote hosts
+### Spotify auth on remote or SSH-only Docker hosts
 
 Spotify authorization is a one-time setup as long as the `/data` bind mount persists.
 After `spotify_token_cache.json` exists in `/data/onetagger`, normal autotagger runs do not need any interactive login.
 
-For a headless server or NAS, run the authorization command against the same data directory you will use for tagging:
+For a remote or SSH-only Docker host, run the authorization command against the same data directory you will use for tagging:
 
 ```sh
 docker run --rm -it \
@@ -92,7 +92,7 @@ For OneTagger the Spotify app redirect URI must be set to:
 http://127.0.0.1:36913/spotify
 ```
 
-This also works for remote Docker management over SSH because `--prompt` only needs the final redirect URL, not a browser running on the NAS itself.
+This also works for remote Docker management over SSH because `--prompt` only needs the final redirect URL, not a browser running on the Docker host itself.
 If you already have a working Spotify token from another OneTagger install, you can also copy `spotify_token_cache.json` into `/path/to/onetagger-data/onetagger/` instead of re-authorizing.
 
 The CLI also supports auto rename through the `renamer` subcommand:
@@ -129,18 +129,10 @@ docker run --rm \
 
 Use `--user` here because overriding the entrypoint bypasses the image wrapper that normally applies `PUID` and `PGID`.
 
-If you need a custom npm registry for local image builds, pass your global npm config as a BuildKit secret:
-
-```sh
-docker build \
-  --secret id=npmrc,src="$HOME/.npmrc" \
-  --build-arg GITHUB_SHA="$(git rev-parse HEAD)" \
-  -t onetagger-cli .
-```
-
 
 ## Credits
 Bas Curtiz - UI, Idea, Help  
+timothe - Docker CLI packaging, GHCR workflow and container docs  
 SongRec (Shazam support) - https://github.com/marin-m/SongRec
 
 ## Support
