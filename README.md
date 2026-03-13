@@ -45,24 +45,22 @@ Export the `config.json` shown by the GUI CLI dialog, then run the container wit
 docker run --rm \
   -e PUID="$(id -u)" \
   -e PGID="$(id -g)" \
-  -v /path/to/config.json:/config/input/config.json:ro \
+  -v /path/to/onetagger-data:/data \
   -v /path/to/music:/music \
-  -v /path/to/onetagger-state:/config/onetagger \
   ghcr.io/marekkon5/onetagger-cli:latest \
-  autotagger --config /config/input/config.json --path /music
+  autotagger --config /data/config.json --path /music
 ```
 
-`/config/onetagger` is where the container stores `onetagger.log` and any cached Spotify token data.
-If you already have a OneTagger state directory you want to reuse, bind that directory there instead of an empty folder.
+Put the exported `config.json` inside `/path/to/onetagger-data` on the host.
+OneTagger will also store `onetagger.log`, run playlists, and any cached Spotify token data in that same bind mount under `/data/onetagger`.
 
 The included `compose.yml` targets the same GHCR image:
 
 ```sh
-ONETAGGER_CONFIG_FILE=/absolute/path/to/config.json \
+ONETAGGER_DATA_DIR=/absolute/path/to/onetagger-data \
 ONETAGGER_MUSIC_DIR=/absolute/path/to/music \
-ONETAGGER_STATE_DIR=/absolute/path/to/onetagger-state \
 docker compose run --rm onetagger \
-  autotagger --config /config/input/config.json --path /music
+  autotagger --config /data/config.json --path /music
 ```
 
 The CLI also supports auto rename through the `renamer` subcommand:
@@ -71,8 +69,8 @@ The CLI also supports auto rename through the `renamer` subcommand:
 docker run --rm \
   -e PUID="$(id -u)" \
   -e PGID="$(id -g)" \
+  -v /path/to/onetagger-data:/data \
   -v /path/to/music:/music \
-  -v /path/to/onetagger-state:/config/onetagger \
   ghcr.io/marekkon5/onetagger-cli:latest \
   renamer --path /music --template "%artist% - %title%" --preview
 ```

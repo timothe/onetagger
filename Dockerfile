@@ -49,7 +49,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 FROM debian:bookworm-slim AS runtime
 
 ENV HOME=/tmp/onetagger-home \
-    XDG_CONFIG_HOME=/config
+    XDG_CONFIG_HOME=/data
 
 WORKDIR /music
 
@@ -59,7 +59,7 @@ RUN apt-get update \
         gosu \
         libasound2 \
     && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /config/onetagger /music /tmp/onetagger-home \
+    && mkdir -p /data /music /tmp/onetagger-home \
     && chmod 1777 /tmp
 
 COPY --from=builder /app/onetagger-cli /usr/local/bin/onetagger-cli
