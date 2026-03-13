@@ -48,6 +48,8 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 
 FROM debian:bookworm-slim AS runtime
 
+LABEL org.opencontainers.image.source="https://github.com/Marekkon5/onetagger"
+
 ENV HOME=/tmp/onetagger-home \
     XDG_CONFIG_HOME=/data
 
