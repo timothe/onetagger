@@ -65,7 +65,19 @@ docker compose run --rm onetagger \
   autotagger --config /config/input/config.json --path /music
 ```
 
-Any other `onetagger-cli` subcommand can be passed through in the same way.
+The CLI also supports auto rename through the `renamer` subcommand:
+
+```sh
+docker run --rm \
+  -e PUID="$(id -u)" \
+  -e PGID="$(id -g)" \
+  -v /path/to/music:/music \
+  -v /path/to/onetagger-state:/config/onetagger \
+  ghcr.io/marekkon5/onetagger-cli:latest \
+  renamer --path /music --template "%artist% - %title%" --preview
+```
+
+Drop `--preview` to apply the rename, add `--output /music-renamed` to write into another directory, or `--copy` to keep the source files in place.
 
 If you need a custom npm registry for local image builds, pass your global npm config as a BuildKit secret:
 
