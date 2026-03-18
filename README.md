@@ -132,7 +132,7 @@ Use `--user` here because overriding the entrypoint bypasses the image wrapper t
 
 ## Credits
 Bas Curtiz - UI, Idea, Help  
-timothe - Docker CLI packaging, GHCR workflow and container docs  
+timothe - (Docker support) - https://github.com/timothe  
 SongRec (Shazam support) - https://github.com/marin-m/SongRec
 
 ## Support
